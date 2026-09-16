@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useStudioStore } from '@/store/useStudioStore';
 
 export const PeelRail: React.FC = () => {
@@ -58,7 +58,7 @@ export const PeelRail: React.FC = () => {
       ref={railRef}
       onPointerDown={handlePointerDown}
       style={{ height: `${RAIL_H}px` }}
-      className="absolute left-8 top-1/2 -translate-y-1/2 w-[104px] cursor-pointer z-20 select-none pointer-events-auto"
+      className="fixed left-8 top-1/2 -translate-y-1/2 w-[104px] cursor-pointer z-20 select-none pointer-events-auto"
     >
       {/* Background Track Line */}
       <div className="absolute left-[5px] top-[6px] bottom-[6px] w-[2px] rounded-full bg-studio-divider" />

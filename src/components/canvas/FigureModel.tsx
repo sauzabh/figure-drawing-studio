@@ -18,7 +18,7 @@ export const FigureModel: React.FC = () => {
   const groupRef = useRef<THREE.Group>(null);
   const currentPose = POSES.find((p) => p.id === selectedPoseId) || POSES[0];
 
-  // Opacity blending logic identical to REFERENCE.html specification
+  // Opacity blending logic matching REFERENCE.html
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
   const skinOp = peelDepth > 88 ? 0.12 : clamp(1 - peelDepth / 42);
   const muscleOp =
@@ -30,19 +30,19 @@ export const FigureModel: React.FC = () => {
   const boneOp = peelDepth < 38 ? 0 : clamp((peelDepth - 38) / 24);
   const isXRay = peelDepth > 85;
 
-  // Global figure opacity dims when an isolated region is selected
-  const baseDim = isolatedRegion ? 0.3 : 1.0;
+  // Dims figure when a region is isolated
+  const baseDim = isolatedRegion ? 0.25 : 1.0;
 
-  // Materials with PBR properties for realistic lighting response
+  // PBR materials for lifelike studio lighting and shadow terminators
   const skinMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#D9D5CF'),
-        roughness: 0.55,
-        metalness: 0.05,
+        color: new THREE.Color('#DFDDD8'),
+        roughness: 0.52,
+        metalness: 0.04,
         transparent: true,
         opacity: skinOp * baseDim,
-        depthWrite: skinOp > 0.8,
+        depthWrite: skinOp > 0.7,
       }),
     [skinOp, baseDim]
   );
@@ -50,9 +50,9 @@ export const FigureModel: React.FC = () => {
   const muscleMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#BE6E5C'),
-        roughness: 0.65,
-        metalness: 0.1,
+        color: new THREE.Color('#B86250'),
+        roughness: 0.62,
+        metalness: 0.08,
         transparent: true,
         opacity: muscleOp * baseDim,
         depthWrite: muscleOp > 0.5,
@@ -63,7 +63,7 @@ export const FigureModel: React.FC = () => {
   const boneMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#E6DFCD'),
+        color: new THREE.Color('#EAE4D2'),
         roughness: 0.45,
         metalness: 0.05,
         transparent: true,
@@ -75,7 +75,7 @@ export const FigureModel: React.FC = () => {
   const xrayMaterial = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color('#4A5568'),
+        color: new THREE.Color('#4B5563'),
         wireframe: true,
         transparent: true,
         opacity: 0.25 * baseDim,
@@ -83,295 +83,289 @@ export const FigureModel: React.FC = () => {
     [baseDim]
   );
 
-  // Animate pose rotation & scrub interpolation smoothly
+  // Smooth rotation and tilt based on pose and scrub
   useFrame(() => {
     if (!groupRef.current) return;
     const targetTilt = (currentPose.tilt + (scrubProgress - 18) / 14) * (Math.PI / 180);
     const targetFlip = currentPose.flip;
 
-    // Smoothly lerp rotation and scale
     groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetTilt, 0.1);
     groupRef.current.scale.x = THREE.MathUtils.lerp(groupRef.current.scale.x, targetFlip, 0.1);
   });
 
   return (
-    <group ref={groupRef} position={[0, -0.2, 0]}>
+    <group ref={groupRef} position={[0, 0.04, 0]}>
       {/* ========================================================================= */}
-      {/* SKELETAL CORE LAYER                                                       */}
+      {/* 1. SKELETAL CORE LAYER                                                    */}
       {/* ========================================================================= */}
       {boneOp > 0.01 && (
-        <group name="Skeleton">
-          {/* Cranium & Jaw */}
-          <mesh position={[0, 1.72, 0]} material={boneMaterial} castShadow>
-            <sphereGeometry args={[0.13, 16, 16]} />
+        <group name="SkeletonCore">
+          {/* Cranium & Facial Skeleton */}
+          <mesh position={[0, 0.78, 0]} material={boneMaterial} castShadow>
+            <sphereGeometry args={[0.11, 16, 16]} />
           </mesh>
-          <mesh position={[0, 1.63, 0.04]} material={boneMaterial}>
-            <boxGeometry args={[0.11, 0.09, 0.12]} />
+          <mesh position={[0, 0.70, 0.03]} material={boneMaterial}>
+            <boxGeometry args={[0.09, 0.08, 0.09]} />
           </mesh>
 
           {/* Cervical & Thoracic Spine */}
-          <mesh position={[0, 1.35, -0.04]} material={boneMaterial}>
-            <cylinderGeometry args={[0.025, 0.03, 0.5, 12]} />
+          <mesh position={[0, 0.45, -0.03]} material={boneMaterial}>
+            <cylinderGeometry args={[0.02, 0.025, 0.45, 10]} />
           </mesh>
 
-          {/* Clavicles */}
-          <mesh position={[0, 1.5, 0.02]} rotation={[0, 0, Math.PI / 2]} material={boneMaterial}>
-            <cylinderGeometry args={[0.015, 0.015, 0.44, 8]} />
+          {/* Clavicle Arch */}
+          <mesh position={[0, 0.55, 0.02]} rotation={[0, 0, Math.PI / 2]} material={boneMaterial}>
+            <cylinderGeometry args={[0.014, 0.014, 0.4, 8]} />
           </mesh>
 
-          {/* Sternum & Ribcage Core */}
-          <mesh position={[0, 1.3, 0]} material={boneMaterial} castShadow>
-            <sphereGeometry args={[0.22, 16, 16]} />
+          {/* Sternum & Ribcage Cage */}
+          <mesh position={[0, 0.38, 0]} material={boneMaterial} castShadow>
+            <sphereGeometry args={[0.18, 16, 16]} />
           </mesh>
 
-          {/* Pelvis / Iliac Crest Basin */}
-          <mesh position={[0, 0.95, 0]} material={boneMaterial} castShadow>
-            <cylinderGeometry args={[0.22, 0.15, 0.22, 16]} />
+          {/* Pelvis Bowl & Sacrum */}
+          <mesh position={[0, 0.05, 0]} material={boneMaterial} castShadow>
+            <cylinderGeometry args={[0.19, 0.13, 0.19, 16]} />
           </mesh>
 
-          {/* Femur (Thigh Bones) */}
-          <mesh position={[-0.13, 0.52, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.03, 0.035, 0.6, 10]} />
+          {/* Femur (Thigh bones) */}
+          <mesh position={[-0.11, -0.28, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.028, 0.03, 0.52, 10]} />
           </mesh>
-          <mesh position={[0.13, 0.52, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.03, 0.035, 0.6, 10]} />
+          <mesh position={[0.11, -0.28, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.028, 0.03, 0.52, 10]} />
           </mesh>
 
           {/* Patella (Knee joints) */}
-          <mesh position={[-0.13, 0.18, 0.04]} material={boneMaterial}>
-            <sphereGeometry args={[0.035, 8, 8]} />
+          <mesh position={[-0.11, -0.56, 0.03]} material={boneMaterial}>
+            <sphereGeometry args={[0.03, 8, 8]} />
           </mesh>
-          <mesh position={[0.13, 0.18, 0.04]} material={boneMaterial}>
-            <sphereGeometry args={[0.035, 8, 8]} />
-          </mesh>
-
-          {/* Tibia & Fibula (Shin bones) */}
-          <mesh position={[-0.13, -0.18, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.03, 0.025, 0.65, 10]} />
-          </mesh>
-          <mesh position={[0.13, -0.18, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.03, 0.025, 0.65, 10]} />
+          <mesh position={[0.11, -0.56, 0.03]} material={boneMaterial}>
+            <sphereGeometry args={[0.03, 8, 8]} />
           </mesh>
 
-          {/* Humerus (Upper arms) */}
-          <mesh position={[-0.28, 1.25, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.025, 0.025, 0.45, 8]} />
+          {/* Tibia & Fibula (Lower leg bones) */}
+          <mesh position={[-0.11, -0.76, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.026, 0.022, 0.5, 10]} />
           </mesh>
-          <mesh position={[0.28, 1.25, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.025, 0.025, 0.45, 8]} />
+          <mesh position={[0.11, -0.76, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.026, 0.022, 0.5, 10]} />
+          </mesh>
+
+          {/* Humerus (Arm bones) */}
+          <mesh position={[-0.25, 0.34, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.022, 0.022, 0.38, 8]} />
+          </mesh>
+          <mesh position={[0.25, 0.34, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.022, 0.022, 0.38, 8]} />
           </mesh>
 
           {/* Radius & Ulna (Forearms) */}
-          <mesh position={[-0.32, 0.82, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.02, 0.02, 0.42, 8]} />
+          <mesh position={[-0.28, -0.02, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.018, 0.018, 0.36, 8]} />
           </mesh>
-          <mesh position={[0.32, 0.82, 0]} material={boneMaterial}>
-            <cylinderGeometry args={[0.02, 0.02, 0.42, 8]} />
+          <mesh position={[0.28, -0.02, 0]} material={boneMaterial}>
+            <cylinderGeometry args={[0.018, 0.018, 0.36, 8]} />
           </mesh>
         </group>
       )}
 
       {/* ========================================================================= */}
-      {/* MUSCULATURE / ÉCORCHÉ LAYER                                              */}
+      {/* 2. MUSCULATURE / ÉCORCHÉ LAYER                                            */}
       {/* ========================================================================= */}
       {muscleOp > 0.01 && (
         <group name="Muscles">
-          {/* Facial & Neck Muscles (Sternocleidomastoid) */}
-          <mesh position={[0, 1.58, 0]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.065, 0.08, 0.16, 12]} />
+          {/* Neck (Sternocleidomastoid & Trapezius) */}
+          <mesh position={[0, 0.64, 0]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.058, 0.075, 0.15, 14]} />
           </mesh>
 
-          {/* Deltoids (Shoulder Caps) */}
-          <mesh position={[-0.28, 1.44, 0]} material={muscleMaterial} castShadow>
-            <sphereGeometry args={[0.085, 14, 14]} />
+          {/* Deltoids (Shoulder epaulets) */}
+          <mesh position={[-0.25, 0.5, 0]} material={muscleMaterial} castShadow>
+            <sphereGeometry args={[0.078, 14, 14]} />
           </mesh>
-          <mesh position={[0.28, 1.44, 0]} material={muscleMaterial} castShadow>
-            <sphereGeometry args={[0.085, 14, 14]} />
-          </mesh>
-
-          {/* Pectoralis Major (Chest Plates) */}
-          <mesh position={[-0.09, 1.36, 0.12]} rotation={[0.1, 0, 0]} material={muscleMaterial} castShadow>
-            <boxGeometry args={[0.16, 0.14, 0.07]} />
-          </mesh>
-          <mesh position={[0.09, 1.36, 0.12]} rotation={[0.1, 0, 0]} material={muscleMaterial} castShadow>
-            <boxGeometry args={[0.16, 0.14, 0.07]} />
+          <mesh position={[0.25, 0.5, 0]} material={muscleMaterial} castShadow>
+            <sphereGeometry args={[0.078, 14, 14]} />
           </mesh>
 
-          {/* Rectus Abdominis & Obliques (Torso core) */}
-          <mesh position={[0, 1.15, 0.02]} material={muscleMaterial} castShadow>
-            <boxGeometry args={[0.27, 0.28, 0.19]} />
+          {/* Pectoralis Major (Chest plates) */}
+          <mesh position={[-0.08, 0.43, 0.1]} rotation={[0.08, 0, 0]} material={muscleMaterial} castShadow>
+            <boxGeometry args={[0.14, 0.13, 0.06]} />
+          </mesh>
+          <mesh position={[0.08, 0.43, 0.1]} rotation={[0.08, 0, 0]} material={muscleMaterial} castShadow>
+            <boxGeometry args={[0.14, 0.13, 0.06]} />
           </mesh>
 
-          {/* Gluteal Group (Hips) */}
-          <mesh position={[-0.12, 0.92, -0.05]} material={muscleMaterial} castShadow>
-            <sphereGeometry args={[0.13, 14, 14]} />
-          </mesh>
-          <mesh position={[0.12, 0.92, -0.05]} material={muscleMaterial} castShadow>
-            <sphereGeometry args={[0.13, 14, 14]} />
+          {/* Rectus Abdominis & Serratus (Core) */}
+          <mesh position={[0, 0.24, 0.02]} material={muscleMaterial} castShadow>
+            <boxGeometry args={[0.24, 0.26, 0.16]} />
           </mesh>
 
-          {/* Quadriceps (Thigh muscle masses) */}
-          <mesh position={[-0.13, 0.54, 0.01]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.105, 0.07, 0.58, 14]} />
+          {/* Gluteus Maximus & Medius (Hips) */}
+          <mesh position={[-0.1, 0.02, -0.05]} material={muscleMaterial} castShadow>
+            <sphereGeometry args={[0.12, 14, 14]} />
           </mesh>
-          <mesh position={[0.13, 0.54, 0.01]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.105, 0.07, 0.58, 14]} />
-          </mesh>
-
-          {/* Gastrocnemius / Soleus (Calves) */}
-          <mesh position={[-0.13, -0.16, -0.02]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.075, 0.045, 0.62, 14]} />
-          </mesh>
-          <mesh position={[0.13, -0.16, -0.02]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.075, 0.045, 0.62, 14]} />
+          <mesh position={[0.1, 0.02, -0.05]} material={muscleMaterial} castShadow>
+            <sphereGeometry args={[0.12, 14, 14]} />
           </mesh>
 
-          {/* Biceps & Triceps (Arms) */}
-          <mesh position={[-0.28, 1.22, 0]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.06, 0.05, 0.42, 12]} />
+          {/* Quadriceps & Hamstrings (Thighs) */}
+          <mesh position={[-0.11, -0.28, 0.01]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.095, 0.065, 0.54, 16]} />
           </mesh>
-          <mesh position={[0.28, 1.22, 0]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.06, 0.05, 0.42, 12]} />
+          <mesh position={[0.11, -0.28, 0.01]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.095, 0.065, 0.54, 16]} />
           </mesh>
 
-          {/* Forearm Flexors & Extensors */}
-          <mesh position={[-0.32, 0.82, 0]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.05, 0.035, 0.4, 12]} />
+          {/* Gastrocnemius (Calf bellies) */}
+          <mesh position={[-0.11, -0.74, -0.02]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.068, 0.04, 0.5, 14]} />
           </mesh>
-          <mesh position={[0.32, 0.82, 0]} material={muscleMaterial} castShadow>
-            <cylinderGeometry args={[0.05, 0.035, 0.4, 12]} />
+          <mesh position={[0.11, -0.74, -0.02]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.068, 0.04, 0.5, 14]} />
+          </mesh>
+
+          {/* Biceps & Triceps (Upper arms) */}
+          <mesh position={[-0.25, 0.32, 0]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.052, 0.044, 0.36, 12]} />
+          </mesh>
+          <mesh position={[0.25, 0.32, 0]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.052, 0.044, 0.36, 12]} />
+          </mesh>
+
+          {/* Forearm Brachioradialis group */}
+          <mesh position={[-0.28, -0.02, 0]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.044, 0.032, 0.34, 12]} />
+          </mesh>
+          <mesh position={[0.28, -0.02, 0]} material={muscleMaterial} castShadow>
+            <cylinderGeometry args={[0.044, 0.032, 0.34, 12]} />
           </mesh>
         </group>
       )}
 
       {/* ========================================================================= */}
-      {/* SURFACE SKIN LAYER (Continuous Natural Human Form)                        */}
+      {/* 3. SURFACE SKIN LAYER (Sculpted Academic Form)                            */}
       {/* ========================================================================= */}
       {skinOp > 0.01 && (
         <group name="Skin">
-          {/* Head & Cranium */}
-          <mesh position={[0, 1.72, 0]} material={skinMaterial} castShadow>
-            <sphereGeometry args={[0.15, 24, 24]} />
+          {/* Head with defined cranial & jaw contour */}
+          <mesh position={[0, 0.78, 0]} material={skinMaterial} castShadow>
+            <sphereGeometry args={[0.135, 24, 24]} />
+          </mesh>
+          <mesh position={[0, 0.71, 0.04]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.105, 0.09, 0.1]} />
           </mesh>
 
           {/* Neck */}
-          <mesh position={[0, 1.56, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.07, 0.085, 0.18, 16]} />
+          <mesh position={[0, 0.63, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.062, 0.078, 0.15, 16]} />
           </mesh>
 
           {/* Torso & Ribcage */}
-          <mesh position={[0, 1.32, 0]} material={skinMaterial} castShadow>
-            <boxGeometry args={[0.36, 0.38, 0.22]} />
+          <mesh position={[0, 0.40, 0]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.32, 0.33, 0.19]} />
           </mesh>
 
-          {/* Pelvis & Abdomen */}
-          <mesh position={[0, 0.98, 0]} material={skinMaterial} castShadow>
-            <boxGeometry args={[0.32, 0.34, 0.22]} />
+          {/* Waist & Abdomen */}
+          <mesh position={[0, 0.20, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.14, 0.15, 0.16, 16]} />
           </mesh>
 
-          {/* Left & Right Shoulders */}
-          <mesh position={[-0.26, 1.42, 0]} material={skinMaterial} castShadow>
-            <sphereGeometry args={[0.095, 16, 16]} />
-          </mesh>
-          <mesh position={[0.26, 1.42, 0]} material={skinMaterial} castShadow>
-            <sphereGeometry args={[0.095, 16, 16]} />
+          {/* Pelvis & Hips */}
+          <mesh position={[0, 0.04, 0]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.29, 0.26, 0.19]} />
           </mesh>
 
-          {/* Arms */}
-          <mesh position={[-0.28, 1.2, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.065, 0.055, 0.42, 16]} />
+          {/* Shoulders */}
+          <mesh position={[-0.24, 0.49, 0]} material={skinMaterial} castShadow>
+            <sphereGeometry args={[0.085, 16, 16]} />
           </mesh>
-          <mesh position={[0.28, 1.2, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.065, 0.055, 0.42, 16]} />
+          <mesh position={[0.24, 0.49, 0]} material={skinMaterial} castShadow>
+            <sphereGeometry args={[0.085, 16, 16]} />
+          </mesh>
+
+          {/* Upper Arms */}
+          <mesh position={[-0.25, 0.30, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.058, 0.048, 0.36, 16]} />
+          </mesh>
+          <mesh position={[0.25, 0.30, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.058, 0.048, 0.36, 16]} />
           </mesh>
 
           {/* Forearms */}
-          <mesh position={[-0.31, 0.82, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.052, 0.038, 0.42, 16]} />
+          <mesh position={[-0.27, -0.02, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.046, 0.034, 0.35, 16]} />
           </mesh>
-          <mesh position={[0.31, 0.82, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.052, 0.038, 0.42, 16]} />
+          <mesh position={[0.27, -0.02, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.046, 0.034, 0.35, 16]} />
           </mesh>
 
           {/* Hands */}
-          <mesh position={[-0.32, 0.54, 0]} material={skinMaterial} castShadow>
-            <boxGeometry args={[0.055, 0.13, 0.03]} />
+          <mesh position={[-0.28, -0.25, 0]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.05, 0.11, 0.025]} />
           </mesh>
-          <mesh position={[0.32, 0.54, 0]} material={skinMaterial} castShadow>
-            <boxGeometry args={[0.055, 0.13, 0.03]} />
-          </mesh>
-
-          {/* Thighs */}
-          <mesh position={[-0.13, 0.54, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.115, 0.075, 0.62, 20]} />
-          </mesh>
-          <mesh position={[0.13, 0.54, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.115, 0.075, 0.62, 20]} />
+          <mesh position={[0.28, -0.25, 0]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.05, 0.11, 0.025]} />
           </mesh>
 
-          {/* Lower Legs (Shins/Calves) */}
-          <mesh position={[-0.13, -0.16, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.078, 0.048, 0.64, 18]} />
+          {/* Thighs (Tapered upper legs) */}
+          <mesh position={[-0.11, -0.28, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.10, 0.068, 0.55, 20]} />
           </mesh>
-          <mesh position={[0.13, -0.16, 0]} material={skinMaterial} castShadow>
-            <cylinderGeometry args={[0.078, 0.048, 0.64, 18]} />
+          <mesh position={[0.11, -0.28, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.10, 0.068, 0.55, 20]} />
+          </mesh>
+
+          {/* Calves & Shins */}
+          <mesh position={[-0.11, -0.74, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.07, 0.042, 0.54, 18]} />
+          </mesh>
+          <mesh position={[0.11, -0.74, 0]} material={skinMaterial} castShadow>
+            <cylinderGeometry args={[0.07, 0.042, 0.54, 18]} />
           </mesh>
 
           {/* Feet */}
-          <mesh position={[-0.13, -0.52, 0.06]} material={skinMaterial} castShadow>
-            <boxGeometry args={[0.09, 0.07, 0.22]} />
+          <mesh position={[-0.11, -0.96, 0.05]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.08, 0.06, 0.19]} />
           </mesh>
-          <mesh position={[0.13, -0.52, 0.06]} material={skinMaterial} castShadow>
-            <boxGeometry args={[0.09, 0.07, 0.22]} />
+          <mesh position={[0.11, -0.96, 0.05]} material={skinMaterial} castShadow>
+            <boxGeometry args={[0.08, 0.06, 0.19]} />
           </mesh>
         </group>
       )}
 
       {/* ========================================================================= */}
-      {/* X-RAY INNER LINE OF ACTION (Active at 100% Peel)                          */}
+      {/* 4. X-RAY INNER LINE OF ACTION                                             */}
       {/* ========================================================================= */}
       {isXRay && (
-        <mesh position={[0, 0.8, 0]} material={xrayMaterial}>
-          <cylinderGeometry args={[0.2, 0.12, 1.8, 12]} />
+        <mesh position={[0, -0.05, 0]} material={xrayMaterial}>
+          <cylinderGeometry args={[0.16, 0.10, 1.6, 12]} />
         </mesh>
       )}
 
       {/* ========================================================================= */}
-      {/* 3D INTERACTIVE REGIONAL HOTSPOTS                                          */}
+      {/* 5. 3D INTERACTIVE REGION HOTSPOTS (Centered on anatomical landmarks)     */}
       {/* ========================================================================= */}
-      <group name="Hotspots">
+      <group name="InteractiveHotspots">
         {/* Skull Hotspot */}
         <mesh
-          position={[0, 1.72, 0]}
+          position={[0, 0.78, 0]}
           onClick={(e) => {
             e.stopPropagation();
             setIsolatedRegion('Skull');
           }}
           visible={false}
         >
-          <sphereGeometry args={[0.22, 8, 8]} />
+          <sphereGeometry args={[0.2, 8, 8]} />
           <meshBasicMaterial transparent opacity={0} />
         </mesh>
 
         {/* Ribcage Hotspot */}
         <mesh
-          position={[0, 1.32, 0]}
+          position={[0, 0.38, 0]}
           onClick={(e) => {
             e.stopPropagation();
             setIsolatedRegion('Ribcage');
-          }}
-          visible={false}
-        >
-          <boxGeometry args={[0.42, 0.42, 0.3]} />
-          <meshBasicMaterial transparent opacity={0} />
-        </mesh>
-
-        {/* Pelvis Hotspot */}
-        <mesh
-          position={[0, 0.95, 0]}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsolatedRegion('Pelvis');
           }}
           visible={false}
         >
@@ -379,16 +373,29 @@ export const FigureModel: React.FC = () => {
           <meshBasicMaterial transparent opacity={0} />
         </mesh>
 
+        {/* Pelvis Hotspot */}
+        <mesh
+          position={[0, 0.04, 0]}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsolatedRegion('Pelvis');
+          }}
+          visible={false}
+        >
+          <boxGeometry args={[0.35, 0.32, 0.26]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+
         {/* Knee Hotspot */}
         <mesh
-          position={[0, 0.18, 0]}
+          position={[0, -0.56, 0]}
           onClick={(e) => {
             e.stopPropagation();
             setIsolatedRegion('Knee');
           }}
           visible={false}
         >
-          <boxGeometry args={[0.36, 0.24, 0.2]} />
+          <boxGeometry args={[0.34, 0.22, 0.2]} />
           <meshBasicMaterial transparent opacity={0} />
         </mesh>
       </group>

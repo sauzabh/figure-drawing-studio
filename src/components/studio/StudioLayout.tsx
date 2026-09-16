@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useStudioStore } from '@/store/useStudioStore';
 import { StudioCanvas } from '@/components/canvas/StudioCanvas';
 import { TopBar } from '@/components/studio/TopBar';
@@ -12,7 +12,6 @@ import { RegionCard } from '@/components/studio/RegionCard';
 import { StudyHeader } from '@/components/studio/StudyHeader';
 import { DrillSetupModal } from '@/components/studio/DrillSetupModal';
 import { DrillRunHUD } from '@/components/studio/DrillRunHUD';
-import { SlidersHorizontal } from 'lucide-react';
 
 export const StudioLayout: React.FC = () => {
   const {
@@ -29,18 +28,6 @@ export const StudioLayout: React.FC = () => {
     prevPose,
     randomizePose,
   } = useStudioStore();
-
-  const [dimensions, setDimensions] = useState({ w: 1440, h: 900 });
-
-  // Update window size for responsive stage scaling
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({ w: window.innerWidth, h: window.innerHeight });
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -93,61 +80,58 @@ export const StudioLayout: React.FC = () => {
     randomizePose,
   ]);
 
-  // Compute stage scale to fit within viewport
-  const stageScale = Math.min(
-    1,
-    Math.min(dimensions.w / 1480, dimensions.h / 940)
-  );
-
   const isDrillRunning = mode === 'drill' && drillPhase === 'run';
   const showChrome = chromeVisible && !isDrillRunning;
 
   return (
-    <div className="fixed inset-0 bg-studio-backdrop overflow-hidden select-none flex items-center justify-center">
-      {/* 1440x900 Fixed Studio Canvas with Responsive Scale */}
-      <div
-        style={{
-          width: '1440px',
-          height: '900px',
-          transform: `scale(${stageScale})`,
-          transformOrigin: 'center center',
-        }}
-        className="relative flex-none bg-studio-canvas overflow-hidden rounded-[14px] shadow-[0_4px_24px_rgba(20,22,26,0.06)]"
-      >
-        {/* Soft Radial Ambient Spotlight on Paper Floor */}
-        <div className="absolute left-1/2 top-[38%] w-[1100px] height-[1100px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,#F7F6F4_0%,rgba(247,246,244,0)_66%)] pointer-events-none" />
+    <div className="fixed inset-0 w-screen h-screen bg-studio-canvas overflow-hidden select-none">
+      {/* Soft Radial Ambient Spotlight on Paper Floor */}
+      <div className="absolute left-1/2 top-[42%] w-[1200px] h-[1200px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,#FAF9F7_0%,rgba(247,246,244,0)_70%)] pointer-events-none z-0" />
 
-        {/* 3D WebGL Studio Viewport */}
-        <StudioCanvas />
+      {/* 3D WebGL Studio Viewport - Fullscreen */}
+      <StudioCanvas />
 
-        {/* Studio Overlays and Chrome */}
-        {showChrome && (
-          <>
-            <TopBar />
-            {mode !== 'drill' && <PeelRail />}
-            {mode === 'pose' && !isolatedRegion && <LightRing />}
-            {mode === 'pose' && <CameraPresets />}
-            {mode === 'pose' && <BottomDock />}
-            {mode === 'study' && <StudyHeader />}
-            <RegionCard />
-          </>
-        )}
+      {/* Studio Overlays and Controls (when visible) */}
+      {showChrome && (
+        <>
+          <TopBar />
+          {mode !== 'drill' && <PeelRail />}
+          {mode === 'pose' && !isolatedRegion && <LightRing />}
+          {mode === 'pose' && <CameraPresets />}
+          {mode === 'pose' && <BottomDock />}
+          {mode === 'study' && <StudyHeader />}
+          <RegionCard />
+        </>
+      )}
 
-        {/* Drill Mode Modals & HUD */}
-        {mode === 'drill' && drillPhase === 'setup' && <DrillSetupModal />}
-        {mode === 'drill' && drillPhase === 'run' && <DrillRunHUD />}
+      {/* Drill Mode Modals & HUD */}
+      {mode === 'drill' && drillPhase === 'setup' && <DrillSetupModal />}
+      {mode === 'drill' && drillPhase === 'run' && <DrillRunHUD />}
 
-        {/* Clean Drawing Mode / Show Controls Capsule */}
-        {(!chromeVisible || isDrillRunning) && (
-          <button
-            onClick={() => setChromeVisible(true)}
-            className="absolute right-8 bottom-8 flex items-center gap-2.5 h-[44px] pl-3.5 pr-4.5 rounded-full bg-studio-surface shadow-card text-studio-ink hover:text-studio-secondary transition-colors cursor-pointer z-30 pointer-events-auto"
+      {/* Clean / Zen Mode: Show Controls Capsule Button */}
+      {(!chromeVisible || isDrillRunning) && (
+        <button
+          onClick={() => setChromeVisible(true)}
+          title="Show controls — Space"
+          style={{ paddingLeft: '14px', paddingRight: '18px' }}
+          className="fixed right-8 bottom-8 flex items-center gap-2.5 h-[44px] rounded-full bg-studio-surface shadow-card text-studio-ink hover:text-studio-secondary hover:bg-[#FAF9F7] transition-all duration-200 cursor-pointer z-40 pointer-events-auto"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#6B7076"
+            strokeWidth="1.5"
+            strokeLinecap="round"
           >
-            <SlidersHorizontal className="w-4 h-4 text-studio-secondary" />
-            <span className="text-[14px] font-medium">Show controls</span>
-          </button>
-        )}
-      </div>
+            <path d="M4 7h16" />
+            <path d="M4 12h16" />
+            <path d="M4 17h10" />
+          </svg>
+          <span className="text-[14px] font-medium">Show controls</span>
+        </button>
+      )}
     </div>
   );
 };

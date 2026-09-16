@@ -11,7 +11,7 @@ export const StudyHeader: React.FC = () => {
   return (
     <>
       {/* Top Region Filter Chips */}
-      <div className="absolute left-1/2 top-[92px] -translate-x-1/2 flex gap-1.5 z-20 pointer-events-auto">
+      <div className="fixed left-1/2 top-[92px] -translate-x-1/2 flex gap-1.5 z-20 pointer-events-auto">
         {REGION_LIST.map((region) => {
           const isActive = studyRegion === region;
           return (
@@ -33,7 +33,7 @@ export const StudyHeader: React.FC = () => {
       {/* Bottom Left: Return Capsule */}
       <button
         onClick={() => setMode('pose')}
-        className="absolute left-8 bottom-8 flex items-center gap-2.5 h-[44px] pl-3.5 pr-4.5 rounded-full bg-studio-surface shadow-card text-studio-ink hover:text-studio-secondary transition-colors cursor-pointer z-20 pointer-events-auto"
+        className="fixed left-8 bottom-8 flex items-center gap-2.5 h-[44px] pl-3.5 pr-4.5 rounded-full bg-studio-surface shadow-card text-studio-ink hover:text-studio-secondary transition-colors cursor-pointer z-20 pointer-events-auto"
       >
         <ChevronLeft className="w-4 h-4" />
         <span className="text-[14px] font-medium">Back to full figure</span>

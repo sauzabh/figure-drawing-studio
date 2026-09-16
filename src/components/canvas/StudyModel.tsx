@@ -26,91 +26,91 @@ export const StudyModel: React.FC = () => {
   );
 
   return (
-    <group position={[0, 0.5, 0]}>
+    <group position={[0, 0.05, 0]}>
       {/* 1. PLANAR SKULL STUDY */}
       {studyRegion === 'Skull' && (
         <group name="SkullStudy">
           {/* Cranial Sphere Mass */}
-          <mesh position={[0, 0.55, -0.05]} material={matA} castShadow>
-            <sphereGeometry args={[0.48, 16, 16]} />
+          <mesh position={[0, 0.22, -0.05]} material={matA} castShadow>
+            <sphereGeometry args={[0.48, 18, 18]} />
           </mesh>
           {/* Frontal Brow Plane */}
-          <mesh position={[0, 0.45, 0.38]} material={matB} castShadow>
-            <boxGeometry args={[0.48, 0.22, 0.12]} />
+          <mesh position={[0, 0.15, 0.38]} material={matB} castShadow>
+            <boxGeometry args={[0.46, 0.20, 0.12]} />
           </mesh>
           {/* Zygomatic Cheek Facets */}
-          <mesh position={[-0.26, 0.28, 0.32]} rotation={[0, 0.35, 0]} material={matC} castShadow>
+          <mesh position={[-0.25, -0.02, 0.32]} rotation={[0, 0.35, 0]} material={matC} castShadow>
             <boxGeometry args={[0.22, 0.18, 0.14]} />
           </mesh>
-          <mesh position={[0.26, 0.28, 0.32]} rotation={[0, -0.35, 0]} material={matC} castShadow>
+          <mesh position={[0.25, -0.02, 0.32]} rotation={[0, -0.35, 0]} material={matC} castShadow>
             <boxGeometry args={[0.22, 0.18, 0.14]} />
           </mesh>
           {/* Dental Arch / Maxilla */}
-          <mesh position={[0, 0.2, 0.36]} material={matB} castShadow>
+          <mesh position={[0, -0.10, 0.36]} material={matB} castShadow>
             <cylinderGeometry args={[0.16, 0.18, 0.15, 12]} />
           </mesh>
           {/* Mandible / Jaw Wedge */}
-          <mesh position={[0, -0.05, 0.3]} material={matA} castShadow>
-            <boxGeometry args={[0.34, 0.25, 0.32]} />
+          <mesh position={[0, -0.32, 0.3]} material={matA} castShadow>
+            <boxGeometry args={[0.34, 0.22, 0.30]} />
           </mesh>
         </group>
       )}
 
       {/* 2. BLOCK HAND STUDY */}
       {studyRegion === 'Hand' && (
-        <group name="HandStudy" rotation={[0.4, 0, 0]}>
+        <group name="HandStudy" rotation={[0.2, 0, 0]}>
           {/* Wrist / Carpal block */}
-          <mesh position={[0, -0.4, 0]} material={matC} castShadow>
+          <mesh position={[0, -0.42, 0]} material={matC} castShadow>
             <boxGeometry args={[0.4, 0.22, 0.18]} />
           </mesh>
           {/* Metacarpal Palm Arch */}
-          <mesh position={[0, 0, 0]} material={matA} castShadow>
-            <boxGeometry args={[0.5, 0.55, 0.16]} />
+          <mesh position={[0, -0.05, 0]} material={matA} castShadow>
+            <boxGeometry args={[0.5, 0.52, 0.16]} />
           </mesh>
           {/* Thenar Thumb Mound */}
-          <mesh position={[-0.32, -0.1, 0.04]} rotation={[0, 0, 0.35]} material={matB} castShadow>
-            <boxGeometry args={[0.2, 0.38, 0.18]} />
+          <mesh position={[-0.32, -0.15, 0.04]} rotation={[0, 0, 0.35]} material={matB} castShadow>
+            <boxGeometry args={[0.2, 0.36, 0.18]} />
           </mesh>
           {/* Thumb Digits */}
-          <mesh position={[-0.45, 0.18, 0.08]} rotation={[0, 0, 0.55]} material={matA} castShadow>
-            <boxGeometry args={[0.12, 0.35, 0.12]} />
+          <mesh position={[-0.44, 0.12, 0.08]} rotation={[0, 0, 0.55]} material={matA} castShadow>
+            <boxGeometry args={[0.12, 0.34, 0.12]} />
           </mesh>
           {/* Index Finger Segment */}
-          <mesh position={[-0.18, 0.52, 0]} material={matB} castShadow>
-            <boxGeometry args={[0.11, 0.48, 0.11]} />
+          <mesh position={[-0.18, 0.44, 0]} material={matB} castShadow>
+            <boxGeometry args={[0.11, 0.46, 0.11]} />
           </mesh>
           {/* Middle Finger Segment */}
-          <mesh position={[-0.06, 0.58, 0]} material={matA} castShadow>
-            <boxGeometry args={[0.11, 0.56, 0.11]} />
+          <mesh position={[-0.06, 0.50, 0]} material={matA} castShadow>
+            <boxGeometry args={[0.11, 0.54, 0.11]} />
           </mesh>
           {/* Ring Finger Segment */}
-          <mesh position={[0.06, 0.53, 0]} material={matB} castShadow>
-            <boxGeometry args={[0.11, 0.5, 0.11]} />
+          <mesh position={[0.06, 0.45, 0]} material={matB} castShadow>
+            <boxGeometry args={[0.11, 0.48, 0.11]} />
           </mesh>
           {/* Pinky Finger Segment */}
-          <mesh position={[0.18, 0.44, 0]} material={matA} castShadow>
-            <boxGeometry args={[0.1, 0.38, 0.1]} />
+          <mesh position={[0.18, 0.36, 0]} material={matA} castShadow>
+            <boxGeometry args={[0.1, 0.36, 0.1]} />
           </mesh>
         </group>
       )}
 
       {/* 3. WEDGE FOOT STUDY */}
       {studyRegion === 'Foot' && (
-        <group name="FootStudy" position={[0, -0.4, 0]}>
+        <group name="FootStudy" position={[0, -0.1, 0]}>
           {/* Calcaneus (Heel Mass) */}
-          <mesh position={[0, 0.22, -0.38]} material={matA} castShadow>
+          <mesh position={[0, 0.05, -0.38]} material={matA} castShadow>
             <boxGeometry args={[0.34, 0.35, 0.42]} />
           </mesh>
           {/* Talus & Ankle Bridge */}
-          <mesh position={[0, 0.45, -0.15]} material={matC} castShadow>
+          <mesh position={[0, 0.30, -0.15]} material={matC} castShadow>
             <boxGeometry args={[0.3, 0.3, 0.32]} />
           </mesh>
           {/* Medial Arch Wedge */}
-          <mesh position={[0, 0.18, 0.12]} rotation={[0.2, 0, 0]} material={matB} castShadow>
+          <mesh position={[0, 0.02, 0.12]} rotation={[0.2, 0, 0]} material={matB} castShadow>
             <boxGeometry args={[0.42, 0.24, 0.65]} />
           </mesh>
           {/* Metatarsal Ball Pad */}
-          <mesh position={[0, 0.05, 0.48]} material={matA} castShadow>
+          <mesh position={[0, -0.12, 0.48]} material={matA} castShadow>
             <boxGeometry args={[0.48, 0.16, 0.3]} />
           </mesh>
         </group>
@@ -120,18 +120,18 @@ export const StudyModel: React.FC = () => {
       {studyRegion === 'Ribcage' && (
         <group name="RibcageStudy">
           {/* Thoracic Oval Mass */}
-          <mesh position={[0, 0.3, 0]} material={matA} castShadow>
+          <mesh position={[0, 0.05, 0]} material={matA} castShadow>
             <sphereGeometry args={[0.55, 20, 20]} />
           </mesh>
           {/* Anterior Sternum Shelf */}
-          <mesh position={[0, 0.38, 0.48]} material={matB} castShadow>
+          <mesh position={[0, 0.12, 0.48]} material={matB} castShadow>
             <boxGeometry args={[0.16, 0.5, 0.1]} />
           </mesh>
           {/* Left & Right Scapulae */}
-          <mesh position={[-0.32, 0.4, -0.45]} rotation={[0, -0.2, 0]} material={matC} castShadow>
+          <mesh position={[-0.32, 0.15, -0.45]} rotation={[0, -0.2, 0]} material={matC} castShadow>
             <boxGeometry args={[0.26, 0.38, 0.06]} />
           </mesh>
-          <mesh position={[0.32, 0.4, -0.45]} rotation={[0, 0.2, 0]} material={matC} castShadow>
+          <mesh position={[0.32, 0.15, -0.45]} rotation={[0, 0.2, 0]} material={matC} castShadow>
             <boxGeometry args={[0.26, 0.38, 0.06]} />
           </mesh>
         </group>
@@ -141,18 +141,18 @@ export const StudyModel: React.FC = () => {
       {studyRegion === 'Pelvis' && (
         <group name="PelvisStudy">
           {/* Sacral Wedge Triangle */}
-          <mesh position={[0, 0.35, -0.32]} material={matC} castShadow>
+          <mesh position={[0, 0.15, -0.32]} material={matC} castShadow>
             <cylinderGeometry args={[0.15, 0.05, 0.35, 10]} />
           </mesh>
           {/* Iliac Crest Wings */}
-          <mesh position={[-0.38, 0.32, 0]} rotation={[0, 0.2, 0]} material={matA} castShadow>
+          <mesh position={[-0.38, 0.12, 0]} rotation={[0, 0.2, 0]} material={matA} castShadow>
             <boxGeometry args={[0.24, 0.45, 0.4]} />
           </mesh>
-          <mesh position={[0.38, 0.32, 0]} rotation={[0, -0.2, 0]} material={matA} castShadow>
+          <mesh position={[0.38, 0.12, 0]} rotation={[0, -0.2, 0]} material={matA} castShadow>
             <boxGeometry args={[0.24, 0.45, 0.4]} />
           </mesh>
           {/* Pubic Arch */}
-          <mesh position={[0, 0.05, 0.3]} material={matB} castShadow>
+          <mesh position={[0, -0.15, 0.3]} material={matB} castShadow>
             <boxGeometry args={[0.3, 0.25, 0.18]} />
           </mesh>
         </group>
@@ -162,19 +162,19 @@ export const StudyModel: React.FC = () => {
       {studyRegion === 'Knee' && (
         <group name="KneeStudy">
           {/* Femoral Shaft & Condyles */}
-          <mesh position={[0, 0.5, 0]} material={matA} castShadow>
+          <mesh position={[0, 0.25, 0]} material={matA} castShadow>
             <cylinderGeometry args={[0.22, 0.32, 0.6, 16]} />
           </mesh>
           {/* Patella */}
-          <mesh position={[0, 0.12, 0.26]} material={matB} castShadow>
+          <mesh position={[0, -0.08, 0.26]} material={matB} castShadow>
             <sphereGeometry args={[0.14, 14, 14]} />
           </mesh>
           {/* Patellar Ligament */}
-          <mesh position={[0, -0.1, 0.22]} material={matC} castShadow>
+          <mesh position={[0, -0.28, 0.22]} material={matC} castShadow>
             <boxGeometry args={[0.1, 0.28, 0.08]} />
           </mesh>
           {/* Tibia Head */}
-          <mesh position={[0, -0.4, 0]} material={matA} castShadow>
+          <mesh position={[0, -0.55, 0]} material={matA} castShadow>
             <cylinderGeometry args={[0.28, 0.18, 0.55, 16]} />
           </mesh>
         </group>
@@ -184,19 +184,19 @@ export const StudyModel: React.FC = () => {
       {studyRegion === 'Shoulder' && (
         <group name="ShoulderStudy">
           {/* Clavicle & Acromion Arch */}
-          <mesh position={[0, 0.55, 0]} material={matC} castShadow>
+          <mesh position={[0, 0.25, 0]} material={matC} castShadow>
             <boxGeometry args={[0.7, 0.1, 0.2]} />
           </mesh>
           {/* Humerus Ball Joint */}
-          <mesh position={[0.2, 0.35, 0]} material={matB} castShadow>
+          <mesh position={[0.2, 0.05, 0]} material={matB} castShadow>
             <sphereGeometry args={[0.24, 16, 16]} />
           </mesh>
           {/* Deltoid Epaulet Cap */}
-          <mesh position={[0.28, 0.25, 0.04]} material={matA} castShadow>
+          <mesh position={[0.28, -0.05, 0.04]} material={matA} castShadow>
             <boxGeometry args={[0.38, 0.5, 0.32]} />
           </mesh>
           {/* Pectoral Insertion Shelf */}
-          <mesh position={[-0.2, 0.2, 0.1]} material={matB} castShadow>
+          <mesh position={[-0.2, -0.10, 0.1]} material={matB} castShadow>
             <boxGeometry args={[0.4, 0.35, 0.15]} />
           </mesh>
         </group>

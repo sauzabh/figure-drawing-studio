@@ -22,7 +22,7 @@ export const RegionCard: React.FC = () => {
   };
 
   return (
-    <div className="absolute right-[220px] top-[180px] w-[290px] bg-studio-surface rounded-card shadow-card p-6 flex flex-col gap-3.5 z-30 pointer-events-auto transition-all duration-200">
+    <div className="fixed right-[140px] top-[160px] w-[290px] bg-studio-surface rounded-card shadow-card p-6 flex flex-col gap-3.5 z-30 pointer-events-auto transition-all duration-200">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-[17px] font-semibold text-studio-ink tracking-[-0.01em]">

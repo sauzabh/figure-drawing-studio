@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { useStudioStore, StudioMode } from '@/store/useStudioStore';
 import { POSES } from '@/data/poses';
 import { REGIONS } from '@/data/anatomy';
-import { Search, Maximize2 } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export const TopBar: React.FC = () => {
   const {
@@ -81,7 +81,7 @@ export const TopBar: React.FC = () => {
   return (
     <>
       {/* Top Left: Typography-led Header */}
-      <div className="absolute left-8 top-8 flex flex-col gap-2.5 whitespace-nowrap z-20 pointer-events-auto">
+      <div className="fixed left-8 top-8 flex flex-col gap-2.5 whitespace-nowrap z-20 pointer-events-auto">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-studio-sage" />
           <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-studio-secondary">
@@ -89,7 +89,7 @@ export const TopBar: React.FC = () => {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <h1 className="text-[44px] font-bold tracking-[-0.02em] text-studio-ink leading-none">
+          <h1 className="text-[38px] md:text-[44px] font-bold tracking-[-0.02em] text-studio-ink leading-none">
             {headline}
           </h1>
           <span className="bg-studio-track rounded-chip px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-studio-secondary">
@@ -102,7 +102,7 @@ export const TopBar: React.FC = () => {
       </div>
 
       {/* Top Center: Segmented Control */}
-      <div className="absolute left-1/2 top-8 -translate-x-1/2 flex bg-studio-track rounded-segmented p-[3px] gap-[2px] w-[300px] z-20 shadow-subtle pointer-events-auto">
+      <div className="fixed left-1/2 top-8 -translate-x-1/2 flex bg-studio-track rounded-segmented p-[3px] gap-[2px] w-[300px] z-20 shadow-subtle pointer-events-auto">
         {MODES.map(({ label, key }) => {
           const isActive = mode === key;
           return (
@@ -122,8 +122,8 @@ export const TopBar: React.FC = () => {
       </div>
 
       {/* Top Right: Search Pill & Fullscreen Toggle */}
-      <div className="absolute right-8 top-8 flex items-center gap-2.5 z-20 pointer-events-auto">
-        <div className="flex items-center gap-2.5 bg-studio-surface rounded-full shadow-card h-[44px] pl-4 pr-1.5 w-[280px] transition-shadow duration-200 focus-within:ring-1 focus-within:ring-studio-slate">
+      <div className="fixed right-8 top-8 flex items-center gap-2.5 z-20 pointer-events-auto">
+        <div className="flex items-center gap-2.5 bg-studio-surface rounded-full shadow-card h-[44px] pl-4 pr-1.5 w-[260px] md:w-[280px] transition-shadow duration-200 focus-within:ring-1 focus-within:ring-studio-slate">
           <Search className="w-4 h-4 text-studio-tertiary flex-shrink-0" />
           <input
             ref={searchInputRef}
@@ -138,12 +138,27 @@ export const TopBar: React.FC = () => {
           </kbd>
         </div>
 
+        {/* Hide Controls Button matching REFERENCE.html */}
         <button
           onClick={() => setChromeVisible(false)}
           title="Hide all controls — Space"
           className="w-[44px] h-[44px] rounded-full bg-studio-surface shadow-card flex items-center justify-center text-studio-secondary hover:text-studio-ink transition-colors cursor-pointer"
         >
-          <Maximize2 className="w-4 h-4" />
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 4H5v4" />
+            <path d="M15 4h4v4" />
+            <path d="M9 20H5v-4" />
+            <path d="M15 20h4v-4" />
+          </svg>
         </button>
       </div>
     </>

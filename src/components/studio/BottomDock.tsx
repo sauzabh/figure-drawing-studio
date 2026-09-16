@@ -65,7 +65,7 @@ export const BottomDock: React.FC = () => {
   };
 
   return (
-    <div className="absolute left-[150px] right-8 bottom-8 flex flex-col gap-3 z-20 pointer-events-auto">
+    <div className="fixed left-8 right-8 md:left-[140px] md:right-8 bottom-8 max-w-[1240px] flex flex-col gap-3 z-20 pointer-events-auto">
       {/* Category Filter Pills */}
       <div className="flex gap-1.5 items-center flex-wrap">
         {CATEGORIES.map((cat) => {
@@ -87,9 +87,9 @@ export const BottomDock: React.FC = () => {
       </div>
 
       {/* Main Dock Container */}
-      <div className="bg-studio-surface rounded-card shadow-card p-[18px_20px] flex flex-col gap-4">
+      <div className="bg-studio-surface rounded-card shadow-card p-[18px_20px] flex flex-col gap-3.5">
         {/* Motion Scrubber Row */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-studio-tertiary">
               Scrub the motion
@@ -136,7 +136,7 @@ export const BottomDock: React.FC = () => {
           <button
             onClick={randomizePose}
             title="Randomize Pose (R)"
-            className="w-[68px] h-[100px] rounded-[14px] bg-studio-track flex flex-col items-center justify-center gap-1.5 flex-shrink-0 hover:bg-studio-subtle transition-colors cursor-pointer"
+            className="w-[68px] h-[92px] rounded-[14px] bg-studio-track flex flex-col items-center justify-center gap-1.5 flex-shrink-0 hover:bg-studio-subtle transition-colors cursor-pointer"
           >
             <Dices className="w-5 h-5 text-studio-ink" />
             <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-studio-secondary">
@@ -145,7 +145,7 @@ export const BottomDock: React.FC = () => {
           </button>
 
           {/* Divider */}
-          <div className="w-[1px] h-[100px] bg-studio-subtle flex-shrink-0" />
+          <div className="w-[1px] h-[92px] bg-studio-subtle flex-shrink-0" />
 
           {/* Scrollable Pose Cards */}
           <div className="flex items-end gap-2 overflow-x-auto flex-1 pb-1">
@@ -157,8 +157,8 @@ export const BottomDock: React.FC = () => {
                   onClick={() => setSelectedPoseId(pose.id)}
                   title={pose.name}
                   style={{
-                    width: isSelected ? '76px' : '62px',
-                    height: isSelected ? '100px' : '84px',
+                    width: isSelected ? '74px' : '60px',
+                    height: isSelected ? '92px' : '80px',
                   }}
                   className={`relative rounded-[12px] flex-shrink-0 overflow-hidden cursor-pointer transition-all duration-200 flex flex-col items-center justify-between p-2 ${
                     isSelected
@@ -169,9 +169,9 @@ export const BottomDock: React.FC = () => {
                   {/* Miniature Silhouette representation */}
                   <div
                     style={{
-                      transform: `rotate(${pose.tilt}deg) scaleX(${pose.flip}) scale(0.6)`,
+                      transform: `rotate(${pose.tilt}deg) scaleX(${pose.flip}) scale(0.55)`,
                     }}
-                    className="w-8 h-14 relative mt-1 transition-transform"
+                    className="w-8 h-12 relative mt-0.5 transition-transform"
                   >
                     <div className="absolute left-2.5 top-0 w-3 h-3.5 rounded-full bg-studio-ink opacity-80" />
                     <div className="absolute left-1.5 top-4 w-5 h-5 rounded-md bg-studio-ink opacity-80" />
@@ -186,7 +186,7 @@ export const BottomDock: React.FC = () => {
             })}
 
             {filteredPoses.length === 0 && (
-              <div className="h-[100px] flex items-center text-[13px] text-studio-tertiary px-4">
+              <div className="h-[92px] flex items-center text-[13px] text-studio-tertiary px-4">
                 No poses match “{searchQuery}”
               </div>
             )}

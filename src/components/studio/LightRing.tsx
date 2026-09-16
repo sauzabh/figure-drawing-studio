@@ -12,7 +12,7 @@ export const LightRing: React.FC = () => {
   const RADIUS = 152;
   const CENTER = SIZE / 2;
 
-  // Convert angle (degrees, 0 = top, 90 = right, etc.) to radians for circular position
+  // Convert angle to radians
   const rad = ((lightAngle - 90) * Math.PI) / 180;
   const knobX = CENTER + RADIUS * Math.cos(rad);
   const knobY = CENTER + RADIUS * Math.sin(rad);
@@ -38,7 +38,6 @@ export const LightRing: React.FC = () => {
       const dx = clientX - centerX;
       const dy = clientY - centerY;
       const deg = Math.round((Math.atan2(dy, dx) * 180) / Math.PI) + 90;
-      // Normalize to -180 to 180
       const normalized = deg > 180 ? deg - 360 : deg < -180 ? deg + 360 : deg;
       setLightAngle(normalized);
     };
@@ -64,9 +63,9 @@ export const LightRing: React.FC = () => {
     <div
       ref={ringRef}
       style={{ width: `${SIZE}px`, height: `${SIZE}px` }}
-      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
+      className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
     >
-      {/* Dashed Orbit Guide Ring */}
+      {/* Dashed Orbit Guide Ring centered on figure */}
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none" className="absolute inset-0">
         <circle
           cx={CENTER}
